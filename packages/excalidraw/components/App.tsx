@@ -11027,18 +11027,17 @@ class App extends React.Component<AppProps, AppState> {
         }
 
         if (this.state.selectedLinearElement.draggedFocusPointBinding) {
-          const { arrowOtherEndpointInitialBinding } =
-            handleFocusPointPointerUp(
-              this.state.selectedLinearElement,
-              this.scene,
-            );
+          handleFocusPointPointerUp(
+            this.state.selectedLinearElement,
+            this.scene,
+          );
           this.setState({
             selectedLinearElement: {
               ...this.state.selectedLinearElement,
               draggedFocusPointBinding: null,
               initialState: {
                 ...this.state.selectedLinearElement.initialState,
-                arrowOtherEndpointInitialBinding,
+                arrowOtherEndpointInitialBinding: null,
               },
             },
           });

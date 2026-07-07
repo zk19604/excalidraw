@@ -736,6 +736,17 @@ const getBindingStrategyForDraggingBindingElementEndpoints_simple = (
       threshold: 0,
       overrideShouldTestInside: true,
     });
+  const otherEndpointInitialBinding =
+    appState.selectedLinearElement?.initialState
+      .arrowOtherEndpointInitialBinding;
+  const otherEndpointInitialGlobalFixedPoint =
+    otherBindableElement && otherEndpointInitialBinding?.fixedPoint
+      ? getGlobalFixedPointForBindableElement(
+          otherEndpointInitialBinding.fixedPoint,
+          otherBindableElement,
+          elementsMap,
+        )
+      : null;
 
   // Handle outside-outside binding to the same element
   if (
@@ -752,16 +763,8 @@ const getBindingStrategyForDraggingBindingElementEndpoints_simple = (
           : // NOTE: Can only affect the start point because new arrows always drag the end point
           opts?.newArrow
           ? appState.selectedLinearElement!.initialState.origin!
-          : otherBindableElement &&
-            appState.selectedLinearElement?.initialState
-              ?.arrowOtherEndpointInitialBinding?.fixedPoint
-          ? getGlobalFixedPointForBindableElement(
-              appState.selectedLinearElement?.initialState
-                .arrowOtherEndpointInitialBinding.fixedPoint,
-              otherBindableElement,
-              elementsMap,
-            )
-          : LinearElementEditor.getPointAtIndexGlobalCoordinates(
+          : otherEndpointInitialGlobalFixedPoint ??
+            LinearElementEditor.getPointAtIndexGlobalCoordinates(
               arrow,
               0,
               elementsMap,
@@ -772,16 +775,8 @@ const getBindingStrategyForDraggingBindingElementEndpoints_simple = (
         element: hit,
         focusPoint: endDragged
           ? globalPoint
-          : otherBindableElement &&
-            appState.selectedLinearElement?.initialState
-              ?.arrowOtherEndpointInitialBinding?.fixedPoint
-          ? getGlobalFixedPointForBindableElement(
-              appState.selectedLinearElement?.initialState
-                .arrowOtherEndpointInitialBinding.fixedPoint,
-              otherBindableElement,
-              elementsMap,
-            )
-          : LinearElementEditor.getPointAtIndexGlobalCoordinates(
+          : otherEndpointInitialGlobalFixedPoint ??
+            LinearElementEditor.getPointAtIndexGlobalCoordinates(
               arrow,
               -1,
               elementsMap,
@@ -854,8 +849,7 @@ const getBindingStrategyForDraggingBindingElementEndpoints_simple = (
       overrideShouldTestInside: true,
     });
   const otherPointWasInsideAtStart =
-    appState.selectedLinearElement?.initialState
-      .arrowOtherEndpointInitialBinding?.mode === "inside";
+    otherEndpointInitialBinding?.mode === "inside";
   const otherNeverOverride = opts?.newArrow
     ? appState.selectedLinearElement?.initialState.arrowStartIsInside
     : otherBinding?.mode === "inside" && otherPointWasInsideAtStart;
@@ -870,11 +864,7 @@ const getBindingStrategyForDraggingBindingElementEndpoints_simple = (
       other = {
         mode: "orbit",
         element: otherBindableElement,
-        focusPoint: getGlobalFixedPointForBindableElement(
-          otherBinding.fixedPoint,
-          otherBindableElement,
-          elementsMap,
-        ),
+        focusPoint: otherFocusPoint || otherEndpoint,
       };
     } else if (
       otherBindableElement &&

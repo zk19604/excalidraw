@@ -437,7 +437,7 @@ export const handleFocusPointPointerDown = (
 export const handleFocusPointPointerUp = (
   linearElementEditor: LinearElementEditor,
   scene: Scene,
-): { arrowOtherEndpointInitialBinding: FixedPointBinding | null } => {
+) => {
   invariant(
     linearElementEditor.draggedFocusPointBinding,
     "Must have a dragged focus point at pointer release",
